@@ -5,7 +5,7 @@
     See the `mappings` module for the conversions between database rows and Kotlin objects.
  */
 
-package io.pleo.antaeus.data
+package io.pleo.antaeus.data.sql.implementation
 
 import io.pleo.antaeus.models.Currency
 import io.pleo.antaeus.models.Customer

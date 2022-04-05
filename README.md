@@ -86,3 +86,10 @@ The code given is structured as follows. Feel free however to modify the structu
 * [Sqlite3](https://sqlite.org/index.html) - Database storage engine
 
 Happy hacking 😁!
+
+
+## What i have done
+
+# 1st commit - big i know 
+- Refactored "services" to be split into queries depending on a generic data layer instead of depending on a specific sql implementation.
+  
