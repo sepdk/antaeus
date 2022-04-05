@@ -5,7 +5,7 @@ import io.pleo.antaeus.data.IRepository
 import io.pleo.antaeus.models.Invoice
 
 class FetchInvoiceByIdQuery(private val repository: IRepository<Invoice, Int>) : IQueryWithInput<Int, Invoice>{
-    override fun execute(id: Int): Invoice {
-        return repository.fetchById(id) ?: throw InvoiceNotFoundException(id)
+    override fun execute(input: Int): Invoice {
+        return repository.fetchById(input) ?: throw InvoiceNotFoundException(input)
     }
 }

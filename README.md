@@ -95,4 +95,7 @@ Happy hacking 😁!
 
 ### 2nd commit
 - Should have been part of the 1st, since 1st commit would contain build errors.... refactored rest and app to respect the new core architecture
-  
+
+### 3rd commit
+- Renamed input parameter from id to input on IQueryWithInput implementations to match interface and get rid of kotlin warning
+    

@@ -8,8 +8,6 @@
 package io.pleo.antaeus.app
 
 import getPaymentProvider
-import io.pleo.antaeus.core.queries.IQuery
-import io.pleo.antaeus.core.queries.IQueryWithInput
 import io.pleo.antaeus.core.queries.customer.FetchAllCustomersQuery
 import io.pleo.antaeus.core.queries.customer.FetchCustomerByIdQuery
 import io.pleo.antaeus.core.queries.invoice.FetchAllInvoicesQuery
@@ -19,8 +17,6 @@ import io.pleo.antaeus.data.sql.implementation.CustomerRepository
 import io.pleo.antaeus.data.sql.implementation.CustomerTable
 import io.pleo.antaeus.data.sql.implementation.InvoiceRepository
 import io.pleo.antaeus.data.sql.implementation.InvoiceTable
-import io.pleo.antaeus.models.Customer
-import io.pleo.antaeus.models.Invoice
 import io.pleo.antaeus.rest.AntaeusRest
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
