@@ -90,6 +90,9 @@ Happy hacking 😁!
 
 ## What i have done
 
-# 1st commit - big i know 
-- Refactored "services" to be split into queries depending on a generic data layer instead of depending on a specific sql implementation.
+### 1st commit
+- Refactored "services" to be split into queries depending on a generic data layer instead of depending on a specific sql implementation.Implmented CQRS and Clean Architecture
+
+### 2nd commit
+- Should have been part of the 1st, since 1st commit would contain build errors.... refactored rest and app to respect the new core architecture
   

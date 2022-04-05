@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 class FetchInvoiceByIdQueryTest {
-    private val repository = mockk<IRepository<Invoice?, Int>> {
+    private val repository = mockk<IRepository<Invoice, Int>> {
         every { fetchById(404) } returns null
     }
 

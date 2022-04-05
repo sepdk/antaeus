@@ -8,10 +8,19 @@
 package io.pleo.antaeus.app
 
 import getPaymentProvider
+import io.pleo.antaeus.core.queries.IQuery
+import io.pleo.antaeus.core.queries.IQueryWithInput
+import io.pleo.antaeus.core.queries.customer.FetchAllCustomersQuery
+import io.pleo.antaeus.core.queries.customer.FetchCustomerByIdQuery
+import io.pleo.antaeus.core.queries.invoice.FetchAllInvoicesQuery
+import io.pleo.antaeus.core.queries.invoice.FetchInvoiceByIdQuery
 import io.pleo.antaeus.core.services.BillingService
-import io.pleo.antaeus.data.sql.implementation.AntaeusDal
+import io.pleo.antaeus.data.sql.implementation.CustomerRepository
 import io.pleo.antaeus.data.sql.implementation.CustomerTable
+import io.pleo.antaeus.data.sql.implementation.InvoiceRepository
 import io.pleo.antaeus.data.sql.implementation.InvoiceTable
+import io.pleo.antaeus.models.Customer
+import io.pleo.antaeus.models.Invoice
 import io.pleo.antaeus.rest.AntaeusRest
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -46,24 +55,30 @@ fun main() {
         }
 
     // Set up data access layer.
-    val dal = AntaeusDal(db = db)
+    val customerRepository = CustomerRepository(db = db)
+    val invoiceRepository = InvoiceRepository(db = db)
 
     // Insert example data in the database.
-    setupInitialData(dal = dal)
+    setupInitialData(customerRepository = customerRepository, invoiceRepository =  invoiceRepository)
 
     // Get third parties
     val paymentProvider = getPaymentProvider()
 
+
     // Create core services
-    val invoiceService = InvoiceService(dal = dal)
-    val customerService = CustomerService(dal = dal)
+    val getCustomersQuery= FetchAllCustomersQuery(repository = customerRepository)
+    val getcustomerByIdQuery = FetchCustomerByIdQuery(repository = customerRepository)
+    val getInvoicesQuery = FetchAllInvoicesQuery(repository = invoiceRepository)
+    val getInvoiceByIdQuery = FetchInvoiceByIdQuery(repository = invoiceRepository)
 
     // This is _your_ billing service to be included where you see fit
     val billingService = BillingService(paymentProvider = paymentProvider)
 
     // Create REST web service
     AntaeusRest(
-        invoiceService = invoiceService,
-        customerService = customerService
+        getInvoiceByIdQuery = getInvoiceByIdQuery,
+        getInvoicesQuery = getInvoicesQuery,
+        getCustomersQuery = getCustomersQuery,
+        getcustomerByIdQuery = getcustomerByIdQuery
     ).run()
 }

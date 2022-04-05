@@ -8,14 +8,20 @@ import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.get
 import io.javalin.apibuilder.ApiBuilder.path
 import io.pleo.antaeus.core.exceptions.EntityNotFoundException
+import io.pleo.antaeus.core.queries.IQuery
+import io.pleo.antaeus.core.queries.IQueryWithInput
+import io.pleo.antaeus.models.Customer
+import io.pleo.antaeus.models.Invoice
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
 private val thisFile: () -> Unit = {}
 
 class AntaeusRest(
-    private val invoiceService: InvoiceService,
-    private val customerService: CustomerService
+        private val getInvoiceByIdQuery: IQueryWithInput<Int, Invoice>,
+        private val getInvoicesQuery: IQuery<List<Invoice>>,
+        private val getcustomerByIdQuery: IQueryWithInput<Int, Customer>,
+        private val getCustomersQuery: IQuery<List<Customer>>
 ) : Runnable {
 
     override fun run() {
@@ -56,24 +62,24 @@ class AntaeusRest(
                     path("invoices") {
                         // URL: /rest/v1/invoices
                         get {
-                            it.json(invoiceService.fetchAll())
+                            it.json(getInvoicesQuery.execute())
                         }
 
                         // URL: /rest/v1/invoices/{:id}
                         get(":id") {
-                            it.json(invoiceService.fetch(it.pathParam("id").toInt()))
+                            it.json(getInvoiceByIdQuery.execute(it.pathParam("id").toInt()))
                         }
                     }
 
                     path("customers") {
                         // URL: /rest/v1/customers
                         get {
-                            it.json(customerService.fetchAll())
+                            it.json(getInvoicesQuery.execute())
                         }
 
                         // URL: /rest/v1/customers/{:id}
                         get(":id") {
-                            it.json(customerService.fetch(it.pathParam("id").toInt()))
+                            it.json(getInvoiceByIdQuery.execute(it.pathParam("id").toInt()))
                         }
                     }
                 }
