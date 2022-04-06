@@ -12,7 +12,6 @@ import io.pleo.antaeus.core.queries.customer.FetchAllCustomersQuery
 import io.pleo.antaeus.core.queries.customer.FetchCustomerByIdQuery
 import io.pleo.antaeus.core.queries.invoice.FetchAllInvoicesQuery
 import io.pleo.antaeus.core.queries.invoice.FetchInvoiceByIdQuery
-import io.pleo.antaeus.core.services.BillingService
 import io.pleo.antaeus.data.sql.implementation.CustomerRepository
 import io.pleo.antaeus.data.sql.implementation.CustomerTable
 import io.pleo.antaeus.data.sql.implementation.InvoiceRepository

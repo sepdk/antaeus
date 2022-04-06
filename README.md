@@ -94,8 +94,11 @@ Happy hacking 😁!
 - Refactored "services" to be split into queries depending on a generic data layer instead of depending on a specific sql implementation.Implmented CQRS and Clean Architecture
 
 ### 2nd commit
-- Should have been part of the 1st, since 1st commit would contain build errors.... refactored rest and app to respect the new core architecture
+- Should have been part of the 1st, since 1st commit would contain build errors(i wasnt able to build in the beginning, but settings autoclrf to false, using gradle version 6.2 instead of newest and jdk 11 instead of newest helped).... refactored rest and app to respect the new core architecture
 
 ### 3rd commit
 - Renamed input parameter from id to input on IQueryWithInput implementations to match interface and get rid of kotlin warning
+
+### 4th commit
+- Changed dependencies to implementation, since it seems they should only be used between the projects for now, like they are used already from the app. Refactored external to a seperate service layer so that the core logic will refer the service interface and a specific implemenation can be made in a new project like i did with the data and data-sql-implementation. Added an empty command class implementing a generic interface and a corresponding test class for the implementation. 
     

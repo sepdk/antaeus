@@ -6,11 +6,11 @@
     however the documentation lays out scenarios in which paying an invoice could fail.
  */
 
-package io.pleo.antaeus.core.external
+package io.pleo.antaeus.service
 
 import io.pleo.antaeus.models.Invoice
 
-interface PaymentProvider {
+interface PaymentService {
     /*
         Charge a customer's account the amount from the invoice.
 
