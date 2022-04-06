@@ -5,8 +5,8 @@
 package io.pleo.antaeus.rest
 
 import io.javalin.Javalin
-import io.javalin.apibuilder.ApiBuilder.get
-import io.javalin.apibuilder.ApiBuilder.path
+import io.javalin.apibuilder.ApiBuilder.*
+import io.pleo.antaeus.core.commands.ICommand
 import io.pleo.antaeus.core.exceptions.EntityNotFoundException
 import io.pleo.antaeus.core.queries.IQuery
 import io.pleo.antaeus.core.queries.IQueryWithInput
@@ -21,7 +21,8 @@ class AntaeusRest(
         private val getInvoiceByIdQuery: IQueryWithInput<Int, Invoice>,
         private val getInvoicesQuery: IQuery<List<Invoice>>,
         private val getcustomerByIdQuery: IQueryWithInput<Int, Customer>,
-        private val getCustomersQuery: IQuery<List<Customer>>
+        private val getCustomersQuery: IQuery<List<Customer>>,
+        private val schedulePaymentsCommand: ICommand
 ) : Runnable {
 
     override fun run() {
@@ -74,12 +75,20 @@ class AntaeusRest(
                     path("customers") {
                         // URL: /rest/v1/customers
                         get {
-                            it.json(getInvoicesQuery.execute())
+                            it.json(getCustomersQuery.execute())
                         }
 
                         // URL: /rest/v1/customers/{:id}
                         get(":id") {
-                            it.json(getInvoiceByIdQuery.execute(it.pathParam("id").toInt()))
+                            it.json(getcustomerByIdQuery.execute(it.pathParam("id").toInt()))
+                        }
+                    }
+
+                    path("schedulePayments") {
+                        // URL: /rest/v1/schedulePayments
+                        // I know there is no body but since it manipulate the state it should be a post 
+                        post {
+                            schedulePaymentsCommand.execute()
                         }
                     }
                 }

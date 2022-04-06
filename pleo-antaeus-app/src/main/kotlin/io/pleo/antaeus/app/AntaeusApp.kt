@@ -7,16 +7,18 @@
 
 package io.pleo.antaeus.app
 
-import getPaymentProvider
+import getPaymentService
 import io.pleo.antaeus.core.queries.customer.FetchAllCustomersQuery
 import io.pleo.antaeus.core.queries.customer.FetchCustomerByIdQuery
 import io.pleo.antaeus.core.queries.invoice.FetchAllInvoicesQuery
 import io.pleo.antaeus.core.queries.invoice.FetchInvoiceByIdQuery
+import io.pleo.antaeus.core.commands.payment.SchedulePaymentsCommand
 import io.pleo.antaeus.data.sql.implementation.CustomerRepository
 import io.pleo.antaeus.data.sql.implementation.CustomerTable
 import io.pleo.antaeus.data.sql.implementation.InvoiceRepository
 import io.pleo.antaeus.data.sql.implementation.InvoiceTable
 import io.pleo.antaeus.rest.AntaeusRest
+import mu.KotlinLogging
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.StdOutSqlLogger
@@ -26,6 +28,8 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import setupInitialData
 import java.io.File
 import java.sql.Connection
+
+private val logger = KotlinLogging.logger {}
 
 fun main() {
     // The tables to create in the database.
@@ -57,7 +61,7 @@ fun main() {
     setupInitialData(customerRepository = customerRepository, invoiceRepository =  invoiceRepository)
 
     // Get third parties
-    val paymentProvider = getPaymentProvider()
+    val paymentService = getPaymentService()
 
 
     // Create core services
@@ -67,13 +71,14 @@ fun main() {
     val getInvoiceByIdQuery = FetchInvoiceByIdQuery(repository = invoiceRepository)
 
     // This is _your_ billing service to be included where you see fit
-    val billingService = BillingService(paymentProvider = paymentProvider)
+    val schedulePaymentsCommand = SchedulePaymentsCommand(paymentService = paymentService, invoiceRepository = invoiceRepository, logger = logger)
 
     // Create REST web service
     AntaeusRest(
         getInvoiceByIdQuery = getInvoiceByIdQuery,
         getInvoicesQuery = getInvoicesQuery,
         getCustomersQuery = getCustomersQuery,
-        getcustomerByIdQuery = getcustomerByIdQuery
+        getcustomerByIdQuery = getcustomerByIdQuery,
+        schedulePaymentsCommand = schedulePaymentsCommand
     ).run()
 }

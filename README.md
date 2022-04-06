@@ -91,14 +91,39 @@ Happy hacking 😁!
 ## What i have done
 
 ### 1st commit
-- Refactored "services" to be split into queries depending on a generic data layer instead of depending on a specific sql implementation.Implmented CQRS and Clean Architecture
+- Refactored "services" to be split into queries depending on a generic data layer instead of depending on a specific sql implementation.
+- Implemented CQRS and Clean Architecture. 
+- Queries should only read and never manipulate data.
+- Commands should be used either for create or update or for use cases for example "ProcessOrderCommand", "EnrollCustomerCommand", etc
+
 
 ### 2nd commit
-- Should have been part of the 1st, since 1st commit would contain build errors(i wasnt able to build in the beginning, but settings autoclrf to false, using gradle version 6.2 instead of newest and jdk 11 instead of newest helped).... refactored rest and app to respect the new core architecture
+- Should have been part of the 1st, since 1st commit would contain build errors(i wasnt able to build in the beginning, but settings autoclrf to false, using gradle version 6.2 instead of newest and jdk 11 instead of newest helped)....
+- Refactored rest and app to respect the new core architecture.
 
 ### 3rd commit
 - Renamed input parameter from id to input on IQueryWithInput implementations to match interface and get rid of kotlin warning
 
 ### 4th commit
-- Changed dependencies to implementation, since it seems they should only be used between the projects for now, like they are used already from the app. Refactored external to a seperate service layer so that the core logic will refer the service interface and a specific implemenation can be made in a new project like i did with the data and data-sql-implementation. Added an empty command class implementing a generic interface and a corresponding test class for the implementation. 
+- Changed dependencies to implementation, since it seems they should only be used between the projects for now, like they are used already from the app.
+- Refactored external to a seperate service layer so that the core logic will refer the service interface and a specific implemenation can be made in a new project like i did with the data and data-sql-implementation. Added an empty command class implementing a generic interface and a corresponding test class for the implementation.
+
+### 5th commit
+- Fixed build error caused by last commit(This would not happen in a real world with pull request into the dev branch, with build validation).
+- Fixed copy/paste error in rest 
+- Refactored IRepository to IReadRepository
+- Created new IWriteRepository used for update
+- Implemented logic in the new command
+- Still missing - unit test implementation, manipulation of invoice status before calling update, implementation of update transaction.
+
+
+### 5th commit
+- Implementation of unit test, manipulation of invoice status before calling update, implementation of update transaction.
+     
+
+##What could have been done extra, if i had more time(Nice to have).
+- The schedule payment command should have created the billing schedules in a schedule table using a IRepository for creating schedules
+- A billing executer command could have been create which would read the entities from the db through the IRepository and act upon it and finally change their state through the IRepository.
+- The reason i consider this nice to have is that the invoice object already has a status and therefore it acts as a schedule state table, as long as its still in pending it has not been processed.
+- The reason it could be needed is because of the date check is in the schedule command, otherwise the schedule command could just be called repeatedly in case of failure and catch up on failed payments.
     

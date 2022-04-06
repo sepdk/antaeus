@@ -9,10 +9,7 @@ package io.pleo.antaeus.data.sql.implementation
 
 import io.pleo.antaeus.data.IRepository
 import io.pleo.antaeus.models.*
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class InvoiceRepository(private val db: Database) : IRepository<Invoice, Int> {
@@ -35,6 +32,19 @@ class InvoiceRepository(private val db: Database) : IRepository<Invoice, Int> {
         return fetchInvoices()
     }
 
+    override fun update(entity: Invoice): Boolean {
+        //TODO google how to do this correctly and how to return a boolean result
+        val id = transaction(db) {
+            // Insert the invoice and returns its new id.
+            InvoiceTable
+                    .update {
+                        it[this.value] = entity.amount.value
+                        it[this.currency] = entity.amount.currency.toString()
+                        it[this.status] = status.toString()
+                    }
+        }
+        return id == 1
+    }
 
     fun fetchInvoices(): List<Invoice> {
         return transaction(db) {
