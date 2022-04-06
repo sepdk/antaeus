@@ -9,22 +9,27 @@ import io.pleo.antaeus.models.Invoice
 import io.pleo.antaeus.models.InvoiceStatus
 import io.pleo.antaeus.service.PaymentService
 import mu.KLogger
+import java.time.LocalDateTime
 
 class SchedulePaymentsCommand (private val paymentService: PaymentService, private val invoiceRepository: IRepository<Invoice, Int>, private val logger : KLogger) : ICommand
 {
     override fun execute() {
         try {
+            val currentDate = LocalDateTime.now()
+            if(currentDate.dayOfMonth != 1){
+                return
+            }
             val invoices = invoiceRepository.fetchAll()
             invoices.forEach {
                 if (it.status == InvoiceStatus.PENDING) {
                     try {
                         if (paymentService.charge(it)) {
-                            // TODO manipulate object before updating
-                            if(!invoiceRepository.update(it)){
+                            val invoiceUpdateModel = Invoice(it.id, it.customerId, it.amount, InvoiceStatus.PAID)
+                            if(!invoiceRepository.update(invoiceUpdateModel)){
                                 logger.error("Could not update db status for invoice with id ${it.id}.")
                             }
                         } else {
-                            logger.info("Could not charge in paymentservice while processing invoice with id ${it.id}.")
+                            logger.warn("Customer account balance did not allow charge while processing invoice with id ${it.id}.")
                         }
                     } catch (e: CustomerNotFoundException) {
                         logger.error("Customer not found with id ${it.customerId} while processing invoice with id ${it.id}. message: ${e.message} stacktrace ${e.stackTrace}")

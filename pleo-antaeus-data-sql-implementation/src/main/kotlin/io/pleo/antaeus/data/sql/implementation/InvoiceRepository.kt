@@ -13,7 +13,7 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class InvoiceRepository(private val db: Database) : IRepository<Invoice, Int> {
-    fun fetchInvoice(id: Int): Invoice? {
+    private fun fetchInvoice(id: Int): Invoice? {
         // transaction(db) runs the internal query as a new database transaction.
         return transaction(db) {
             // Returns the first invoice with matching id.
@@ -33,21 +33,20 @@ class InvoiceRepository(private val db: Database) : IRepository<Invoice, Int> {
     }
 
     override fun update(entity: Invoice): Boolean {
-        //TODO google how to do this correctly and how to return a boolean result
-        val id = transaction(db) {
-            // Insert the invoice and returns its new id.
-            InvoiceTable
-                    .update {
-                        it[this.value] = entity.amount.value
-                        it[this.currency] = entity.amount.currency.toString()
-                        it[this.status] = status.toString()
-                    }
+        val result =  transaction(db) {
+            InvoiceTable.update(
+                    where = { InvoiceTable.id.eq(entity.id) }
+            ) {
+                it[this.value] = entity.amount.value
+                it[this.currency] = entity.amount.currency.toString()
+                it[this.status] = entity.status.toString()
+            }
         }
-        return id == 1
+        return result == 1
     }
 
-    fun fetchInvoices(): List<Invoice> {
-        return transaction(db) {
+    private fun fetchInvoices(): List<Invoice> {
+        return  transaction(db) {
             InvoiceTable
                 .selectAll()
                 .map { it.toInvoice() }

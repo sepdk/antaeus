@@ -26,7 +26,7 @@ class CustomerRepository(private val db: Database) : IReadRepository<Customer, I
         return fetchCustomers()
     }
 
-    fun fetchCustomer(id: Int): Customer? {
+    private fun fetchCustomer(id: Int): Customer? {
         return transaction(db) {
             CustomerTable
                     .select { CustomerTable.id.eq(id) }
@@ -35,7 +35,7 @@ class CustomerRepository(private val db: Database) : IReadRepository<Customer, I
         }
     }
 
-    fun fetchCustomers(): List<Customer> {
+    private fun fetchCustomers(): List<Customer> {
         return transaction(db) {
             CustomerTable
                     .selectAll()
