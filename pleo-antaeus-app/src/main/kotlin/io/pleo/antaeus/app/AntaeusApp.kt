@@ -12,11 +12,12 @@ import io.pleo.antaeus.core.queries.customer.FetchAllCustomersQuery
 import io.pleo.antaeus.core.queries.customer.FetchCustomerByIdQuery
 import io.pleo.antaeus.core.queries.invoice.FetchAllInvoicesQuery
 import io.pleo.antaeus.core.queries.invoice.FetchInvoiceByIdQuery
-import io.pleo.antaeus.core.commands.payment.SchedulePaymentsCommand
+import io.pleo.antaeus.core.commands.payment.ProcessPaymentsCommand
 import io.pleo.antaeus.data.sql.implementation.CustomerRepository
 import io.pleo.antaeus.data.sql.implementation.CustomerTable
 import io.pleo.antaeus.data.sql.implementation.InvoiceRepository
 import io.pleo.antaeus.data.sql.implementation.InvoiceTable
+import io.pleo.antaeus.logger.Implementation.Logger
 import io.pleo.antaeus.rest.AntaeusRest
 import mu.KotlinLogging
 import org.jetbrains.exposed.sql.Database
@@ -28,6 +29,8 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import setupInitialData
 import java.io.File
 import java.sql.Connection
+import java.time.LocalDate
+import java.util.*
 
 private val logger = KotlinLogging.logger {}
 
@@ -63,22 +66,31 @@ fun main() {
     // Get third parties
     val paymentService = getPaymentService()
 
-
     // Create core services
     val getCustomersQuery= FetchAllCustomersQuery(repository = customerRepository)
-    val getcustomerByIdQuery = FetchCustomerByIdQuery(repository = customerRepository)
+    val getCustomerByIdQuery = FetchCustomerByIdQuery(repository = customerRepository)
     val getInvoicesQuery = FetchAllInvoicesQuery(repository = invoiceRepository)
     val getInvoiceByIdQuery = FetchInvoiceByIdQuery(repository = invoiceRepository)
 
-    // This is _your_ billing service to be included where you see fit
-    val schedulePaymentsCommand = SchedulePaymentsCommand(paymentService = paymentService, invoiceRepository = invoiceRepository, logger = logger)
+    // initialize the command with the repository, the paymentService and the logger
+    val processPaymentsCommand = ProcessPaymentsCommand(paymentService = paymentService, invoiceRepository = invoiceRepository, logger = Logger(logger))
+
+    //sets up a timer that runs schedulePaymentsCommand every day with first run on startup
+    val timer = Timer()
+    val task: TimerTask = object : TimerTask() {
+        override fun run() {
+            // execute the command with the current date
+            processPaymentsCommand.execute(LocalDate.now())
+        }
+    }
+    // repeats every day 1000 ms * 60 seconds * 60 minutes * 24 hours
+    timer.schedule(task, 0L, 1000 * 60 * 60 * 24)
 
     // Create REST web service
     AntaeusRest(
         getInvoiceByIdQuery = getInvoiceByIdQuery,
         getInvoicesQuery = getInvoicesQuery,
         getCustomersQuery = getCustomersQuery,
-        getcustomerByIdQuery = getcustomerByIdQuery,
-        schedulePaymentsCommand = schedulePaymentsCommand
+        getcustomerByIdQuery = getCustomerByIdQuery
     ).run()
 }

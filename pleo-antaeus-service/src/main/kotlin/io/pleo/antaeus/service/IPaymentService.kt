@@ -10,7 +10,7 @@ package io.pleo.antaeus.service
 
 import io.pleo.antaeus.models.Invoice
 
-interface PaymentService {
+interface IPaymentService {
     /*
         Charge a customer's account the amount from the invoice.
 

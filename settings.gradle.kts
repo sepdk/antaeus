@@ -6,5 +6,7 @@ include(
     "pleo-antaeus-core",
     "pleo-antaeus-data",
     "pleo-antaeus-data-sql-implementation",
-    "pleo-antaeus-service"
+    "pleo-antaeus-service",
+    "pleo-antaeus-logger",
+    "pleo-antaeus-logger-implementation"
 )

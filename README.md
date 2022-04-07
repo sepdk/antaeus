@@ -102,7 +102,8 @@ Happy hacking 😁!
 - Refactored rest and app to respect the new core architecture.
 
 ### 3rd commit
-- Renamed input parameter from id to input on IQueryWithInput implementations to match interface and get rid of kotlin warning
+- Renamed input parameter from id to input on IQueryWithInput implementations to match interface and get rid of kotlin warning(I think it should actually be named what it is, but im not a fan of supressing warning so i kept it, same goes for currentdate.
+
 
 ### 4th commit
 - Changed dependencies to implementation, since it seems they should only be used between the projects for now, like they are used already from the app.
@@ -118,15 +119,14 @@ Happy hacking 😁!
 
 
 ### 6th commit
-- Implmented manipulation of invoice status before calling update, implementation of update transaction.
+- Implemented manipulation of invoice status before calling update, implementation of update transaction.
 
 ### 7th commit
-- Implmented unit test  
+- Renamed PaymentService to IPaymentService
+- Refactored the schedulePaymentsCommand from being called by rest to being a processPaymentsCommand called every day by a timer in the app
+- Refactored processPaymentsCommand to take input param with date in order to mock it in test
+- Added ILogger interface and implementation in order to make a generic logging not dependent on the KLogger framework.
+- Implemented unit test  
 
-###What could have been done instead, if i had more time(Nice to have).
-- S1. The schedule payment command could be an executer instead with a cron job wrapper instead of a rest invokation.
-- S2. The schedule payment command should have created the billing schedules in a schedule table using a IRepository for creating schedules
-- S2. A billing executer command could have been create which would read the entities from the db through the IRepository and act upon it and finally change their state through the IRepository.
-- S2. The reason i consider this nice to have is that the invoice object already has a status and therefore it acts as a schedule state table, as long as its still in pending it has not been processed.
-- S2. The reason it could be needed is because of the date check is in the schedule command, otherwise the schedule command could just be called repeatedly in case of failure and catch up on failed payments.
+
     

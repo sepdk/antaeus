@@ -5,7 +5,7 @@ import io.pleo.antaeus.models.Currency
 import io.pleo.antaeus.models.Invoice
 import io.pleo.antaeus.models.InvoiceStatus
 import io.pleo.antaeus.models.Money
-import io.pleo.antaeus.service.PaymentService
+import io.pleo.antaeus.service.IPaymentService
 import java.math.BigDecimal
 import kotlin.random.Random
 
@@ -32,8 +32,8 @@ internal fun setupInitialData(customerRepository: CustomerRepository, invoiceRep
 }
 
 // This is the mocked instance of the payment provider
-internal fun getPaymentService(): PaymentService {
-    return object : PaymentService {
+internal fun getPaymentService(): IPaymentService {
+    return object : IPaymentService {
         override fun charge(invoice: Invoice): Boolean {
                 return Random.nextBoolean()
         }

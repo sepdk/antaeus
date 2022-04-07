@@ -42,6 +42,7 @@ class InvoiceRepository(private val db: Database) : IRepository<Invoice, Int> {
                 it[this.status] = entity.status.toString()
             }
         }
+        // assuming that the integer value will be 1 for true and 0 for false otherwise it would be the id of the entity(then -1 would probably mean false), i found it really hard to find a answer when googling exposed update integer return value
         return result == 1
     }
 

@@ -14,7 +14,10 @@ application {
 dependencies {
     implementation(project(":pleo-antaeus-data"))
     implementation(project(":pleo-antaeus-data-sql-implementation"))
+    implementation(project(":pleo-antaeus-logger"))
+    implementation(project(":pleo-antaeus-logger-implementation"))
     implementation(project(":pleo-antaeus-rest"))
     implementation(project(":pleo-antaeus-core"))
     implementation(project(":pleo-antaeus-models"))
+    implementation(project(":pleo-antaeus-service"))
 }

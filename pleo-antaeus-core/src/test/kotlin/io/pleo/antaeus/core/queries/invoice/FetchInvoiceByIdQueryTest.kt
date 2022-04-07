@@ -1,10 +1,9 @@
 
-package io.pleo.antaeus.core.services
+package io.pleo.antaeus.core.queries.invoice
 
 import io.mockk.every
 import io.mockk.mockk
 import io.pleo.antaeus.core.exceptions.InvoiceNotFoundException
-import io.pleo.antaeus.core.queries.invoice.FetchInvoiceByIdQuery
 import io.pleo.antaeus.data.IReadRepository
 import io.pleo.antaeus.models.Invoice
 import org.junit.jupiter.api.Test
